@@ -1,0 +1,46 @@
+[
+  {
+    "features": [
+      "sprint_speed",
+      "hp_to_1b"
+    ],
+    "target": "runner_runs_per_run",
+    "n": 227,
+    "cv_folds": 10,
+    "cv_r2": 0.4135,
+    "cv_mae": 0.00902,
+    "coefficients": {
+      "sprint_speed": 0.00537,
+      "hp_to_1b": -0.01993
+    },
+    "intercept": -0.05743
+  },
+  {
+    "features": [
+      "sprint_speed"
+    ],
+    "target": "runner_runs_per_run",
+    "n": 227,
+    "cv_folds": 10,
+    "cv_r2": 0.3989,
+    "cv_mae": 0.00915,
+    "coefficients": {
+      "sprint_speed": 0.00773
+    },
+    "intercept": -0.21081
+  },
+  {
+    "features": [
+      "hp_to_1b"
+    ],
+    "target": "runner_runs_per_run",
+    "n": 227,
+    "cv_folds": 10,
+    "cv_r2": 0.3566,
+    "cv_mae": 0.00945,
+    "coefficients": {
+      "hp_to_1b": -0.05213
+    },
+    "intercept": 0.23317
+  }
+]

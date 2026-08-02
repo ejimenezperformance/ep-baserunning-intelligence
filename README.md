@@ -1,0 +1,94 @@
+# EP Base Running Intelligence
+
+*[English version](README_EN.md)*
+
+Proyecto de EP (Emerson Performance) — analítica de corrido de bases usando
+datos 100% reales y públicos de Baseball Savant, temporada 2026. Mismo
+enfoque metodológico que [EP Swing Intelligence](https://github.com/emersonjp2412-jpg/ep-swing-intelligence),
+aplicado a una habilidad distinta: velocidad y toma de decisiones en las
+bases.
+
+## Pregunta central
+
+¿Qué tan bien predice la **velocidad física pura** (Sprint Speed, tiempo
+Home-to-First) el **valor real de corrido de bases** que ya calcula
+Savant? Y, más interesante todavía: ¿la velocidad predice igual de bien
+distintas habilidades de corrido de bases, o hay diferencias grandes entre
+ellas?
+
+## Datos
+
+Cinco descargas públicas de Baseball Savant (leaderboards de "Running"),
+temporada 2026, sin selección de jugadores de nuestra parte — población
+completa calificada:
+
+| Archivo | n | Contenido |
+|---|---|---|
+| `data/sprint_speed.csv` | 513 | Sprint Speed (ft/seg), Home-to-First (seg) — variables físicas |
+| `data/baserunning_run_value.csv` | 228 | Baserunning Run Value real de Savant (general) |
+| `data/base_running.csv` | 298 | Valor de avanzar extra bases (1ra→3ra, etc.) |
+| `data/basestealing_running_game.csv` | 420 | Valor de robo de bases, leads primario/secundario |
+| `data/running_splits.csv` | 482 | Splits de tiempo cada 5 pies desde el batazo hasta 90 pies |
+
+Todos cruzados por `player_id`, sin transcripción manual — descarga
+directa en CSV desde Savant.
+
+## Resultado (capítulo 1)
+
+Modelo de regresión lineal con validación cruzada de 10 folds
+(`sprint_speed` + `hp_to_1b` → valor real, normalizado por oportunidades
+para evitar sesgo por tiempo de juego):
+
+| Habilidad | n | R² |
+|---|---|---|
+| Baserunning Run Value (general) | 227 | **0.41** |
+| Extra bases tomadas (1ra→3ra, etc.) | 298 | **0.48** |
+| Robo de bases exitoso | 406 | **0.04** |
+
+![Comparativo](report/chart_baserunning_comparativo.png)
+
+### La lectura honesta
+
+La velocidad pura explica casi la mitad de la varianza en **avance de
+extra bases** — tiene sentido, es una decisión física directa: el corredor
+ve la pelota, corre, y la velocidad domina el resultado.
+
+Pero para el **robo de bases exitoso**, la velocidad explica prácticamente
+nada (R²=0.04). Esto no es un error del modelo — es un hallazgo real: robar
+una base depende de la lectura del "jump" contra el pitcher, tendencias de
+conteo, el brazo del catcher rival, y timing — variables de decisión y
+anticipación que sprint speed no captura, aunque intuitivamente parezca
+que "el más rápido roba más bases".
+
+**Para contexto de coaching:** esto separa dos habilidades entrenables de
+forma distinta. Sprint speed (mecánica lineal, fuerza, técnica de
+aceleración) es el terreno clásico de un S&C Coach. El robo de bases
+exitoso depende más de lectura de juego y timing — trabajo de scouting y
+repetición situacional, no solo de correr más rápido.
+
+## Cómo reproducir
+
+```bash
+pip install pandas scikit-learn matplotlib
+python3 model/train_baserunning_model.py
+```
+
+Esto genera `model/baserunning_model_metrics.json`,
+`report/chart_baserunning_scatter.png`, y
+`data/merged_baserunning_dataset_2026.csv`.
+
+## Próximos pasos (no incluidos en este capítulo)
+
+- Separar por posición (infielders vs. outfielders vs. catchers)
+- Aislar corredores de elite ("bolts", sprints por encima de un umbral) del resto
+- Cruzar con `running_splits.csv` (splits de aceleración) para ver en qué
+  tramo de la carrera (arranque vs. velocidad máxima) se explica mejor cada
+  habilidad
+- Triangular con literatura de biomecánica de sprint (aceleración lineal vs.
+  agilidad/cambio de dirección)
+
+## Sobre EP
+
+Parte del portafolio de **Emerson Performance (EP)** — metodología de
+analítica de rendimiento en béisbol que combina datos públicos de Savant,
+biomecánica, y trabajo de campo como Strength & Conditioning Coach.
