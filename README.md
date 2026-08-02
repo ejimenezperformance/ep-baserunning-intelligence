@@ -66,24 +66,80 @@ aceleración) es el terreno clásico de un S&C Coach. El robo de bases
 exitoso depende más de lectura de juego y timing — trabajo de scouting y
 repetición situacional, no solo de correr más rápido.
 
+## Resultado (capítulo 2)
+
+Capítulo 1 dejó una pregunta abierta: si la velocidad máxima no predice el
+robo de bases exitoso, ¿es porque ninguna parte de la carrera importa, o
+es específicamente porque el robo depende del **arranque** ("jump") y no
+de la velocidad de crucero?
+
+Usamos `running_splits.csv` (tiempo cada 5 pies desde el batazo) para
+descomponer la carrera en tres fases y medir la velocidad promedio
+(ft/seg) de cada una:
+
+- **Burst (0-10 ft):** primeros pasos, arranque/reacción
+- **Aceleración (10-45 ft):** fase de aceleración
+- **Velocidad tope (45-90 ft):** velocidad de crucero sostenida
+
+Regresión lineal, validación cruzada de 10 folds, cada fase probada por
+separado y las tres juntas (n=179, jugadores con las tres fuentes de datos
+cruzadas y mínimo 3 intentos de robo):
+
+| Habilidad | Burst (0-10ft) | Aceleración (10-45ft) | Vel. tope (45-90ft) | Las 3 fases juntas |
+|---|---|---|---|---|
+| Baserunning Run Value (total) | 0.12 | **0.32** | 0.29 | 0.33 |
+| Extra bases (tasa de éxito) | 0.01 | 0.10 | **0.11** | 0.10 |
+| Robo de bases (tasa de éxito) | 0.01 | 0.01 | 0.00 | -0.01 |
+
+![Fases](report/chart_baserunning_ch2_phases.png)
+
+### La lectura honesta
+
+La hipótesis de este capítulo era que el robo de bases se explicaría por
+el **burst** (el "jump" inicial) aunque no por la velocidad tope. **Esa
+hipótesis no se sostuvo.** Ninguna fase de la carrera —ni arranque, ni
+aceleración, ni velocidad de crucero— predice el éxito en el robo de
+bases. El R² se mantiene prácticamente en cero en las tres fases y hasta
+se vuelve negativo al combinarlas.
+
+Esto es un hallazgo más fuerte que el del capítulo 1, no más débil: no es
+que "la velocidad máxima no alcanza a explicarlo" — es que **ninguna
+métrica de velocidad, medida en ningún punto de la carrera, explica el
+robo de bases exitoso**. Refuerza que es una habilidad de lectura y
+decisión (timing contra el pitcher, tendencias de conteo, brazo del
+catcher) prácticamente independiente de qué tan rápido corre el jugador.
+
+Para el valor general de corrido de bases y para extra bases, la fase de
+**aceleración (10-45 ft)** explica tanto o más que la velocidad tope —
+sugiere que gran parte del valor real viene de qué tan rápido el corredor
+alcanza velocidad útil, no solo de su techo de velocidad máxima.
+
+**Para contexto de coaching:** si el objetivo es mejorar el corrido de
+bases general o el avance de extra bases, trabajar la fase de aceleración
+(los primeros 10-45 pies) tiene tanto o más impacto que perseguir
+velocidad máxima pura. Para robo de bases, ningún trabajo de velocidad va
+a mover la aguja — es terreno de scouting y repetición situacional.
+
 ## Cómo reproducir
 
 ```bash
 pip install pandas scikit-learn matplotlib
-python3 model/train_baserunning_model.py
+python3 model/train_baserunning_model.py       # capítulo 1
+python3 model/train_baserunning_model_ch2.py   # capítulo 2
 ```
 
-Esto genera `model/baserunning_model_metrics.json`,
+Capítulo 1 genera `model/baserunning_model_metrics.json`,
 `report/chart_baserunning_scatter.png`, y
 `data/merged_baserunning_dataset_2026.csv`.
 
-## Próximos pasos (no incluidos en este capítulo)
+Capítulo 2 genera `model/baserunning_model_ch2_metrics.json`,
+`report/chart_baserunning_ch2_phases.png`, y
+`data/merged_baserunning_dataset_ch2_2026.csv`.
+
+## Próximos pasos (no incluidos en estos capítulos)
 
 - Separar por posición (infielders vs. outfielders vs. catchers)
 - Aislar corredores de elite ("bolts", sprints por encima de un umbral) del resto
-- Cruzar con `running_splits.csv` (splits de aceleración) para ver en qué
-  tramo de la carrera (arranque vs. velocidad máxima) se explica mejor cada
-  habilidad
 - Triangular con literatura de biomecánica de sprint (aceleración lineal vs.
   agilidad/cambio de dirección)
 

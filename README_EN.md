@@ -63,23 +63,80 @@ technique) is classic Strength & Conditioning territory. Successful base
 stealing depends more on game reading and timing — scouting and
 situational-repetition work, not just running faster.
 
+## Result (chapter 2)
+
+Chapter 1 left an open question: if top speed doesn't predict successful
+stolen bases, is it because no part of the sprint matters, or specifically
+because stealing depends on the **burst** ("the jump") rather than cruise
+speed?
+
+We used `running_splits.csv` (time at every 5 feet from contact) to break
+the sprint into three phases and measure average velocity (ft/sec) in
+each:
+
+- **Burst (0-10 ft):** first steps, reaction/start
+- **Acceleration (10-45 ft):** acceleration phase
+- **Top speed (45-90 ft):** sustained cruise speed
+
+Linear regression, 10-fold cross-validation, each phase tested alone and
+all three together (n=179, players with all three data sources merged
+and a minimum of 3 stolen-base attempts):
+
+| Skill | Burst (0-10ft) | Acceleration (10-45ft) | Top speed (45-90ft) | All 3 phases |
+|---|---|---|---|---|
+| Baserunning Run Value (total) | 0.12 | **0.32** | 0.29 | 0.33 |
+| Extra bases (success rate) | 0.01 | 0.10 | **0.11** | 0.10 |
+| Stolen bases (success rate) | 0.01 | 0.01 | 0.00 | -0.01 |
+
+![Phases](report/chart_baserunning_ch2_phases.png)
+
+### The honest read
+
+This chapter's hypothesis was that stolen-base success would be explained
+by the **burst** (the initial "jump"), even if not by top speed. **That
+hypothesis did not hold.** No phase of the sprint — not burst, not
+acceleration, not cruise speed — predicts stolen-base success. R² stays
+essentially at zero across all three phases and even turns negative when
+combined.
+
+This is a stronger finding than chapter 1's, not a weaker one: it's not
+that "top speed alone falls short of explaining it" — it's that **no
+speed metric, measured at any point in the sprint, explains successful
+base stealing**. It reinforces that this is a reading-and-decision skill
+(timing against the pitcher, count tendencies, catcher's arm) almost
+entirely independent of how fast the runner actually is.
+
+For overall base-running value and for extra bases, the **acceleration
+phase (10-45 ft)** explains as much or more than top speed — suggesting
+much of the real value comes from how quickly a runner reaches useful
+speed, not just their maximum ceiling.
+
+**For coaching context:** if the goal is improving overall base running
+or extra-base advancement, training the acceleration phase (the first
+10-45 feet) has as much or more impact than chasing pure top speed. For
+stolen bases, no speed work is going to move the needle — that's scouting
+and situational-repetition territory.
+
 ## How to reproduce
 
 ```bash
 pip install pandas scikit-learn matplotlib
-python3 model/train_baserunning_model.py
+python3 model/train_baserunning_model.py       # chapter 1
+python3 model/train_baserunning_model_ch2.py   # chapter 2
 ```
 
-This generates `model/baserunning_model_metrics.json`,
+Chapter 1 generates `model/baserunning_model_metrics.json`,
 `report/chart_baserunning_scatter.png`, and
 `data/merged_baserunning_dataset_2026.csv`.
 
-## Next steps (not included in this chapter)
+Chapter 2 generates `model/baserunning_model_ch2_metrics.json`,
+`report/chart_baserunning_ch2_phases.png`, and
+`data/merged_baserunning_dataset_ch2_2026.csv`.
+
+## Next steps (not included in these chapters)
 
 - Split by position (infielders vs. outfielders vs. catchers)
 - Isolate elite runners ("bolts," sprints above a threshold) from the rest
-- Cross-reference with `running_splits.csv` (acceleration splits) to see
-  which phase of the run (start vs. top speed) explains each skill best
 - Triangulate with sprint biomechanics literature (linear acceleration vs.
   agility/change of direction)
 
