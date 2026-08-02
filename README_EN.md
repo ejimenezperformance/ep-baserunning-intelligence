@@ -133,9 +133,75 @@ Chapter 2 generates `model/baserunning_model_ch2_metrics.json`,
 `report/chart_baserunning_ch2_phases.png`, and
 `data/merged_baserunning_dataset_ch2_2026.csv`.
 
+## Result (chapter 3)
+
+Chapters 1 and 2 treated all runners as a single population. But does
+speed predict base-running value equally for an infielder and an
+outfielder? We split by position (infielders: 1B/2B/3B/SS; outfielders:
+LF/CF/RF; catchers and DH separately) and re-ran both analyses within
+each group.
+
+Catchers (n=11) and DH (n=13) ended up with insufficient sample for
+reliable regression after merging with real data — they're reported
+descriptively only, with no model fit.
+
+| Position | n | R² Sprint Speed → value | Avg. speed (ft/sec) |
+|---|---|---|---|
+| Infielders | 115 | **0.45** | 27.44 |
+| Outfielders | 88 | **0.24** | 28.21 |
+
+| Position | n | R² Burst | R² Acceleration | R² Top speed |
+|---|---|---|---|---|
+| Infielders | 127 | 0.12 | **0.42** | 0.41 |
+| Outfielders | 94 | 0.04 | 0.24 | 0.17 |
+
+![Position](report/chart_baserunning_ch3_position.png)
+
+### The honest read
+
+Speed explains nearly twice as much of the variance in base-running
+value for infielders as for outfielders — even though outfielders are,
+on average, faster. This isn't contradictory: among outfielders, almost
+everyone already runs fast (the group is more homogeneous in speed), so
+speed stops being what separates a good baserunner from an average one
+within that group. What likely drives the difference there is game
+reading and decision-making — consistent with the pattern we already saw
+in chapter 2 for stolen bases.
+
+For infielders, on the other hand, sprint speed and the
+acceleration/top-speed phases explain a much larger share of real value
+(R²=0.42-0.45) — the physical ceiling remains the dominant factor in
+this group.
+
+**For coaching context:** investing in pure speed work has a higher
+expected return for infielders than for outfielders. For outfielders,
+who typically already have solid baseline speed, the room for
+improvement in base running is more likely in situational reading and
+decision-making work than in further polishing speed.
+
+## How to reproduce
+
+```bash
+pip install pandas scikit-learn matplotlib
+python3 model/train_baserunning_model.py       # chapter 1
+python3 model/train_baserunning_model_ch2.py   # chapter 2
+python3 model/train_baserunning_model_ch3.py   # chapter 3
+```
+
+Chapter 1 generates `model/baserunning_model_metrics.json`,
+`report/chart_baserunning_scatter.png`, and
+`data/merged_baserunning_dataset_2026.csv`.
+
+Chapter 2 generates `model/baserunning_model_ch2_metrics.json`,
+`report/chart_baserunning_ch2_phases.png`, and
+`data/merged_baserunning_dataset_ch2_2026.csv`.
+
+Chapter 3 generates `model/baserunning_model_ch3_metrics.json`,
+`report/chart_baserunning_ch3_position.png`, and
+`data/merged_baserunning_dataset_ch3_2026.csv`.
+
 ## Next steps (not included in these chapters)
 
-- Split by position (infielders vs. outfielders vs. catchers)
 - Isolate elite runners ("bolts," sprints above a threshold) from the rest
 - Triangulate with sprint biomechanics literature (linear acceleration vs.
   agility/change of direction)

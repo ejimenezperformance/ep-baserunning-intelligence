@@ -136,9 +136,74 @@ Capítulo 2 genera `model/baserunning_model_ch2_metrics.json`,
 `report/chart_baserunning_ch2_phases.png`, y
 `data/merged_baserunning_dataset_ch2_2026.csv`.
 
+## Resultado (capítulo 3)
+
+Los capítulos 1 y 2 trataron a todos los corredores como una sola
+población. Pero, ¿la velocidad predice el valor de corrido de bases igual
+para un infielder que para un outfielder? Separamos por posición
+(infielders: 1B/2B/3B/SS; outfielders: LF/CF/RF; catchers y DH aparte) y
+repetimos ambos análisis dentro de cada grupo.
+
+Catchers (n=11) y DH (n=13) quedaron con muestra insuficiente para
+regresión confiable tras el cruce con datos reales — se reportan solo de
+forma descriptiva, sin modelo.
+
+| Posición | n | R² Sprint Speed → valor | Vel. promedio (ft/seg) |
+|---|---|---|---|
+| Infielders | 115 | **0.45** | 27.44 |
+| Outfielders | 88 | **0.24** | 28.21 |
+
+| Posición | n | R² Burst | R² Aceleración | R² Vel. tope |
+|---|---|---|---|---|
+| Infielders | 127 | 0.12 | **0.42** | 0.41 |
+| Outfielders | 94 | 0.04 | 0.24 | 0.17 |
+
+![Posición](report/chart_baserunning_ch3_position.png)
+
+### La lectura honesta
+
+La velocidad explica casi el doble de la varianza del valor de corrido de
+bases en infielders que en outfielders — a pesar de que los outfielders
+son, en promedio, más rápidos. Esto no es contradictorio: entre
+outfielders casi todos ya corren rápido (el grupo es más homogéneo en
+velocidad), así que la velocidad deja de ser lo que distingue a un buen
+corredor de uno promedio dentro de ese grupo. Lo que probablemente marca
+la diferencia ahí es lectura de juego y toma de decisiones — coincide con
+el patrón que ya vimos en el capítulo 2 para el robo de bases.
+
+Para infielders, en cambio, sprint speed y las fases de aceleración/tope
+explican una porción mucho mayor del valor real (R²=0.42-0.45) — el techo
+físico sigue siendo el factor dominante en este grupo.
+
+**Para contexto de coaching:** invertir en trabajo de velocidad pura tiene
+mayor retorno esperado en infielders que en outfielders. Para
+outfielders, que ya suelen tener buena velocidad de base, el margen de
+mejora en corrido de bases probablemente está más en el trabajo de
+lectura y decisión situacional que en seguir puliendo velocidad.
+
+## Cómo reproducir
+
+```bash
+pip install pandas scikit-learn matplotlib
+python3 model/train_baserunning_model.py       # capítulo 1
+python3 model/train_baserunning_model_ch2.py   # capítulo 2
+python3 model/train_baserunning_model_ch3.py   # capítulo 3
+```
+
+Capítulo 1 genera `model/baserunning_model_metrics.json`,
+`report/chart_baserunning_scatter.png`, y
+`data/merged_baserunning_dataset_2026.csv`.
+
+Capítulo 2 genera `model/baserunning_model_ch2_metrics.json`,
+`report/chart_baserunning_ch2_phases.png`, y
+`data/merged_baserunning_dataset_ch2_2026.csv`.
+
+Capítulo 3 genera `model/baserunning_model_ch3_metrics.json`,
+`report/chart_baserunning_ch3_position.png`, y
+`data/merged_baserunning_dataset_ch3_2026.csv`.
+
 ## Próximos pasos (no incluidos en estos capítulos)
 
-- Separar por posición (infielders vs. outfielders vs. catchers)
 - Aislar corredores de elite ("bolts", sprints por encima de un umbral) del resto
 - Triangular con literatura de biomecánica de sprint (aceleración lineal vs.
   agilidad/cambio de dirección)
