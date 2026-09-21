@@ -231,7 +231,32 @@ def style_ax(ax):
         ax.spines[spine].set_color(NAVY)
 
 
-def make_chart(res_a, res_b, df_b):
+TEXT = {
+    "es": {
+        "labels": ["¿Intenta la\nbase extra?", "¿Sale safe\ncuando intenta?"],
+        "ylabel1": "R² (10-fold CV) de Sprint Speed",
+        "title1": "Velocidad → decisión de avanzar\n(extra bases, n={n}, barras = IC 95% bootstrap)",
+        "xlabel2": "Lead primario (ft)",
+        "ylabel2": "Intentos de robo por oportunidad (%)",
+        "title2": "Lead primario vs. frecuencia de intento de robo\n(asociación, no causalidad)",
+        "suptitle": "EP Base Running Intelligence — Capítulo 4\nDecisión, no velocidad",
+        "file": "chart_baserunning_ch4_decision.png",
+    },
+    "en": {
+        "labels": ["Does he attempt\nthe extra base?", "Is he safe\nwhen he attempts?"],
+        "ylabel1": "Sprint Speed R² (10-fold CV)",
+        "title1": "Speed → decision to advance\n(extra bases, n={n}, bars = 95% bootstrap CI)",
+        "xlabel2": "Primary lead (ft)",
+        "ylabel2": "Steal attempts per opportunity (%)",
+        "title2": "Primary lead vs. steal attempt frequency\n(association, not causation)",
+        "suptitle": "EP Base Running Intelligence — Chapter 4\nDecision, not speed",
+        "file": "chart_baserunning_ch4_decision_en.png",
+    },
+}
+
+
+def make_chart(res_a, res_b, df_b, lang="es"):
+    t = TEXT[lang]
     fig, axes = plt.subplots(1, 2, figsize=(11.5, 5.2), dpi=200)
     fig.patch.set_facecolor(OFFWHITE)
 
@@ -239,18 +264,17 @@ def make_chart(res_a, res_b, df_b):
     ax = axes[0]
     style_ax(ax)
     s = res_a["same_sample"]
-    labels = ["¿Intenta la\nbase extra?", "¿Sale safe\ncuando intenta?"]
+    labels = t["labels"]
     vals = [s["attempt_rate"]["cv_r2"], max(s["safe_per_attempt"]["cv_r2"], 0)]
     cis = [s["attempt_rate"]["ci95"], s["safe_per_attempt"]["ci95"]]
-    bars = ax.bar(labels, vals, color=[GOLD, GREY], edgecolor=NAVY, linewidth=0.8, zorder=3, width=0.55)
+    ax.bar(labels, vals, color=[GOLD, GREY], edgecolor=NAVY, linewidth=0.8, zorder=3, width=0.55)
     for i, (v, ci) in enumerate(zip(vals, cis)):
         ax.errorbar(i, v, yerr=[[max(v - max(ci[0], 0), 0)], [max(ci[1] - v, 0)]],
                     color=NAVY, capsize=4, linewidth=1, zorder=4)
         ax.text(i, ci[1] + 0.02, f"R² = {v:.2f}", ha="center", fontsize=10, color=NAVY, fontweight="bold")
-    ax.set_ylabel("R² (10-fold CV) de Sprint Speed", fontsize=11, color=NAVY)
+    ax.set_ylabel(t["ylabel1"], fontsize=11, color=NAVY)
     ax.set_ylim(0, max(c[1] for c in cis) + 0.12)
-    ax.set_title(f"Velocidad → decisión de avanzar\n(extra bases, n={s['n']}, barras = IC 95% bootstrap)",
-                 fontsize=11, fontweight="bold", color=NAVY, pad=10)
+    ax.set_title(t["title1"].format(n=s["n"]), fontsize=11, fontweight="bold", color=NAVY, pad=10)
 
     # Panel 2: lead primario vs frecuencia de intento de robo
     ax2 = axes[1]
@@ -265,15 +289,13 @@ def make_chart(res_a, res_b, df_b):
     r = res_b["primary_lead_vs_attempt_rate"]["r"]
     ax2.text(0.04, 0.93, f"r = {r:.2f}  (n={res_b['n_population']})", transform=ax2.transAxes,
              fontsize=10, color=NAVY, fontweight="bold", va="top")
-    ax2.set_xlabel("Lead primario (ft)", fontsize=11, color=NAVY)
-    ax2.set_ylabel("Intentos de robo por oportunidad (%)", fontsize=11, color=NAVY)
-    ax2.set_title("Lead primario vs. frecuencia de intento de robo\n(asociación, no causalidad)",
-                  fontsize=11, fontweight="bold", color=NAVY, pad=10)
+    ax2.set_xlabel(t["xlabel2"], fontsize=11, color=NAVY)
+    ax2.set_ylabel(t["ylabel2"], fontsize=11, color=NAVY)
+    ax2.set_title(t["title2"], fontsize=11, fontweight="bold", color=NAVY, pad=10)
 
-    fig.suptitle("EP Base Running Intelligence — Capítulo 4\nDecisión, no velocidad",
-                 fontsize=12.5, fontweight="bold", color=NAVY, y=1.06)
+    fig.suptitle(t["suptitle"], fontsize=12.5, fontweight="bold", color=NAVY, y=1.06)
     plt.tight_layout()
-    out = REPORT_DIR / "chart_baserunning_ch4_decision.png"
+    out = REPORT_DIR / t["file"]
     plt.savefig(out, facecolor=OFFWHITE, bbox_inches="tight")
     plt.close()
     return out
@@ -313,8 +335,9 @@ def main():
         json.dump({"block_a_extra_bases": res_a, "block_b_leads_steals": res_b}, f, indent=2)
     print(f"Wrote {out_json}")
 
-    chart = make_chart(res_a, res_b, df_b)
-    print(f"Wrote {chart}")
+    for lang in ("es", "en"):
+        chart = make_chart(res_a, res_b, df_b, lang=lang)
+        print(f"Wrote {chart}")
 
     merged = df_b.merge(xb.drop(columns=["entity_name"]), on="player_id", how="left")
     merged.to_csv(DATA_DIR / "merged_baserunning_dataset_ch4_2026.csv", index=False)
