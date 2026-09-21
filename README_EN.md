@@ -117,22 +117,6 @@ or extra-base advancement, training the acceleration phase (the first
 stolen bases, no speed work is going to move the needle — that's scouting
 and situational-repetition territory.
 
-## How to reproduce
-
-```bash
-pip install pandas scikit-learn matplotlib
-python3 model/train_baserunning_model.py       # chapter 1
-python3 model/train_baserunning_model_ch2.py   # chapter 2
-```
-
-Chapter 1 generates `model/baserunning_model_metrics.json`,
-`report/chart_baserunning_scatter.png`, and
-`data/merged_baserunning_dataset_2026.csv`.
-
-Chapter 2 generates `model/baserunning_model_ch2_metrics.json`,
-`report/chart_baserunning_ch2_phases.png`, and
-`data/merged_baserunning_dataset_ch2_2026.csv`.
-
 ## Result (chapter 3)
 
 Chapters 1 and 2 treated all runners as a single population. But does
@@ -179,32 +163,100 @@ who typically already have solid baseline speed, the room for
 improvement in base running is more likely in situational reading and
 decision-making work than in further polishing speed.
 
+## Result (chapter 4)
+
+Chapters 1-3 measured how much speed explains baserunning *value*. But
+taking an extra base involves two separate decisions: **whether to
+attempt** and **whether to be safe once attempting**. Does speed predict
+both equally? And for stealing: how do leads relate to attempt frequency
+and success once speed is accounted for?
+
+**A. Extra bases: attempting vs. being safe** (n=293; minimum 30
+opportunities and 10 attempts per player; same sample for both questions)
+
+| Question | R² (10-fold CV) | 95% bootstrap CI |
+|---|---|---|
+| Does he attempt the extra base? (attempt rate) | **0.28** | 0.19 – 0.36 |
+| Is he safe when he attempts? | **0.03** | -0.01 – 0.09 |
+
+With minimum-attempt thresholds from 5 to 20 the pattern holds (attempt
+R² 0.22-0.28; safe-per-attempt R² 0.02-0.03).
+
+**B. Leads and stolen bases** (qualified population with lead data)
+
+| Relationship | r | n | p |
+|---|---|---|---|
+| Sprint Speed ↔ primary lead | 0.46 | 420 | < 0.001 |
+| Sprint Speed ↔ secondary lead | 0.39 | 420 | < 0.001 |
+| Primary lead ↔ steal attempt rate | 0.36 | 420 | < 0.001 |
+| Secondary lead ↔ steal attempt rate | 0.42 | 420 | < 0.001 |
+| Primary lead ↔ steal success % (≥ 8 attempts) | 0.06 | 99 | 0.58 |
+| Secondary lead ↔ steal success % (≥ 8 attempts) | 0.05 | 99 | 0.59 |
+
+Steal attempt-rate model (10-fold CV R², 95% bootstrap CI): speed only
+**0.35** (0.29-0.42); speed + primary lead **0.35** (0.30-0.43); speed +
+both leads **0.39** (0.33-0.46).
+
+![Decision](report/chart_baserunning_ch4_decision.png)
+
+### The honest read
+
+**CONFIRMED (in this data):**
+- Speed explains a good amount of **who attempts** the extra base (R² 0.28)
+  and very little of **who is safe when attempting** (R² 0.03). The link
+  with per-attempt success is not zero (r = 0.21, p < 0.001) but it is
+  small.
+- Faster runners take longer leads (r = 0.46), and longer leads are
+  associated with more steal attempts.
+- Lead is **not** associated with steal success percentage (n = 99,
+  r ≈ 0.05, p ≈ 0.6).
+- Adding both leads to speed raises attempt-rate R² from 0.35 to 0.39, but
+  the intervals overlap considerably: a modest, inconclusive gain.
+
+**INTERPRETATION (hypothesis, not proven here):**
+- Speed and the lead that comes with it seem to shape *willingness to
+  attempt* more than *decision quality*. This is consistent with chapters
+  2 and 3, but this data does not prove it.
+- For coaching, this suggests that training speed alone does not move
+  "being safe," and that decision quality has to be measured separately.
+
+**Limitations:**
+- One season (2026) and aggregated Savant data, with no play-level context
+  (count, pitcher, catcher, score).
+- Attempts are not random: runners tend to pick favorable situations, which
+  compresses variation in success percentage (mean ≈ 80% among steals with
+  ≥ 8 attempts).
+- Lead is the runner's own choice (someone planning to run tends to lead
+  off farther), so these associations do **not** show that a longer lead
+  causes more attempts.
+- The minimum-attempt thresholds are analysis choices; sensitivity is
+  reported in `model/baserunning_model_ch4_metrics.json`.
+
 ## How to reproduce
 
 ```bash
-pip install pandas scikit-learn matplotlib
+pip install -r requirements.txt
 python3 model/train_baserunning_model.py       # chapter 1
 python3 model/train_baserunning_model_ch2.py   # chapter 2
 python3 model/train_baserunning_model_ch3.py   # chapter 3
+python3 model/train_baserunning_model_ch4.py   # chapter 4
 ```
 
-Chapter 1 generates `model/baserunning_model_metrics.json`,
-`report/chart_baserunning_scatter.png`, and
-`data/merged_baserunning_dataset_2026.csv`.
-
-Chapter 2 generates `model/baserunning_model_ch2_metrics.json`,
-`report/chart_baserunning_ch2_phases.png`, and
-`data/merged_baserunning_dataset_ch2_2026.csv`.
-
-Chapter 3 generates `model/baserunning_model_ch3_metrics.json`,
-`report/chart_baserunning_ch3_position.png`, and
-`data/merged_baserunning_dataset_ch3_2026.csv`.
+Each script writes its metrics file to `model/`
+(`baserunning_model_metrics.json`, `..._ch2_metrics.json`,
+`..._ch3_metrics.json`, `..._ch4_metrics.json`), its chart to `report/`, and
+its merged dataset to `data/` (`merged_baserunning_dataset_*.csv`).
 
 ## Next steps (not included in these chapters)
 
+- Measure situation-adjusted decision quality (count, pitcher, catcher,
+  score): requires play-level data rather than aggregated leaderboards, and
+  more than one season
 - Isolate elite runners ("bolts," sprints above a threshold) from the rest
 - Triangulate with sprint biomechanics literature (linear acceleration vs.
-  agility/change of direction)
+  agility/change of direction), using verified sources
+- Turn the findings into a one-page coach sheet (sample runner profile),
+  presented as a demonstration
 
 ## About EP
 

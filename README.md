@@ -120,22 +120,6 @@ bases general o el avance de extra bases, trabajar la fase de aceleración
 velocidad máxima pura. Para robo de bases, ningún trabajo de velocidad va
 a mover la aguja — es terreno de scouting y repetición situacional.
 
-## Cómo reproducir
-
-```bash
-pip install pandas scikit-learn matplotlib
-python3 model/train_baserunning_model.py       # capítulo 1
-python3 model/train_baserunning_model_ch2.py   # capítulo 2
-```
-
-Capítulo 1 genera `model/baserunning_model_metrics.json`,
-`report/chart_baserunning_scatter.png`, y
-`data/merged_baserunning_dataset_2026.csv`.
-
-Capítulo 2 genera `model/baserunning_model_ch2_metrics.json`,
-`report/chart_baserunning_ch2_phases.png`, y
-`data/merged_baserunning_dataset_ch2_2026.csv`.
-
 ## Resultado (capítulo 3)
 
 Los capítulos 1 y 2 trataron a todos los corredores como una sola
@@ -181,32 +165,101 @@ outfielders, que ya suelen tener buena velocidad de base, el margen de
 mejora en corrido de bases probablemente está más en el trabajo de
 lectura y decisión situacional que en seguir puliendo velocidad.
 
+## Resultado (capítulo 4)
+
+Los capítulos 1-3 midieron cuánto explica la velocidad del *valor* de
+corrido de bases. Pero avanzar una base extra implica dos decisiones
+distintas: **si intentar** y **si salir safe al intentar**. ¿La velocidad
+predice ambas por igual? Y en el robo de bases: ¿cómo se relacionan los
+leads con la frecuencia y el éxito de los intentos, una vez considerada la
+velocidad?
+
+**A. Extra bases: intentar vs. salir safe** (n=293; mínimo 30 oportunidades
+y 10 intentos por jugador; misma muestra para ambas preguntas)
+
+| Pregunta | R² (10-fold CV) | IC 95% bootstrap |
+|---|---|---|
+| ¿Intenta la base extra? (tasa de intento) | **0.28** | 0.19 – 0.36 |
+| ¿Sale safe cuando intenta? | **0.03** | -0.01 – 0.09 |
+
+Con umbrales de 5 a 20 intentos mínimos el patrón se mantiene (R² de
+intento 0.22-0.28; R² de safe por intento 0.02-0.03).
+
+**B. Leads y robo de bases** (población calificada con lead disponible)
+
+| Relación | r | n | p |
+|---|---|---|---|
+| Sprint Speed ↔ lead primario | 0.46 | 420 | < 0.001 |
+| Sprint Speed ↔ lead secundario | 0.39 | 420 | < 0.001 |
+| Lead primario ↔ tasa de intento de robo | 0.36 | 420 | < 0.001 |
+| Lead secundario ↔ tasa de intento de robo | 0.42 | 420 | < 0.001 |
+| Lead primario ↔ % de éxito del robo (≥ 8 intentos) | 0.06 | 99 | 0.58 |
+| Lead secundario ↔ % de éxito del robo (≥ 8 intentos) | 0.05 | 99 | 0.59 |
+
+Modelo de tasa de intento de robo (R² 10-fold CV, IC 95% bootstrap):
+solo velocidad **0.35** (0.29-0.42); velocidad + lead primario **0.35**
+(0.30-0.43); velocidad + ambos leads **0.39** (0.33-0.46).
+
+![Decisión](report/chart_baserunning_ch4_decision.png)
+
+### La lectura honesta
+
+**CONFIRMED (en estos datos):**
+- La velocidad explica bastante **quién intenta** la base extra (R² 0.28) y
+  muy poco **quién sale safe cuando intenta** (R² 0.03). La relación con el
+  éxito por intento no es cero (r = 0.21, p < 0.001), pero es pequeña.
+- Los corredores más rápidos toman leads más largos (r = 0.46), y los leads
+  más largos se asocian con más intentos de robo.
+- El lead **no** se asocia con el porcentaje de éxito del robo (n = 99,
+  r ≈ 0.05, p ≈ 0.6).
+- Agregar ambos leads a la velocidad sube el R² de la tasa de intento de
+  0.35 a 0.39, pero los intervalos se solapan bastante: mejora modesta, no
+  concluyente.
+
+**INTERPRETATION (hipótesis, no probada aquí):**
+- La velocidad y el lead que la acompaña parecen moldear la *disposición a
+  intentar*, más que la *calidad de la decisión*. Es consistente con los
+  capítulos 2 y 3, pero estos datos no lo prueban.
+- Para coaching, esto sugiere que entrenar velocidad no mueve por sí solo
+  el "salir safe", y que la calidad de decisión hay que medirla aparte.
+
+**Limitaciones:**
+- Una sola temporada (2026) y datos agregados de Savant, sin contexto por
+  jugada (conteo, pitcher, receptor, marcador).
+- Quien intenta no lo hace al azar: suele elegir situaciones favorables, lo
+  que comprime la variación del porcentaje de éxito (promedio ≈ 80% en
+  robos con ≥ 8 intentos).
+- El lead es una elección del propio corredor (quien planea correr suele
+  alejarse más), así que las asociaciones **no** prueban que un lead mayor
+  cause más intentos.
+- Los umbrales mínimos de intentos son decisiones del análisis; se reporta
+  la sensibilidad en `model/baserunning_model_ch4_metrics.json`.
+
 ## Cómo reproducir
 
 ```bash
-pip install pandas scikit-learn matplotlib
+pip install -r requirements.txt
 python3 model/train_baserunning_model.py       # capítulo 1
 python3 model/train_baserunning_model_ch2.py   # capítulo 2
 python3 model/train_baserunning_model_ch3.py   # capítulo 3
+python3 model/train_baserunning_model_ch4.py   # capítulo 4
 ```
 
-Capítulo 1 genera `model/baserunning_model_metrics.json`,
-`report/chart_baserunning_scatter.png`, y
-`data/merged_baserunning_dataset_2026.csv`.
-
-Capítulo 2 genera `model/baserunning_model_ch2_metrics.json`,
-`report/chart_baserunning_ch2_phases.png`, y
-`data/merged_baserunning_dataset_ch2_2026.csv`.
-
-Capítulo 3 genera `model/baserunning_model_ch3_metrics.json`,
-`report/chart_baserunning_ch3_position.png`, y
-`data/merged_baserunning_dataset_ch3_2026.csv`.
+Cada script genera su archivo de métricas en `model/`
+(`baserunning_model_metrics.json`, `..._ch2_metrics.json`,
+`..._ch3_metrics.json`, `..._ch4_metrics.json`), su gráfico en `report/` y
+su dataset cruzado en `data/` (`merged_baserunning_dataset_*.csv`).
 
 ## Próximos pasos (no incluidos en estos capítulos)
 
+- Medir calidad de decisión ajustada por situación (conteo, pitcher,
+  receptor, marcador): requiere datos por jugada, no los agregados de
+  leaderboard, y más de una temporada
 - Aislar corredores de elite ("bolts", sprints por encima de un umbral) del resto
 - Triangular con literatura de biomecánica de sprint (aceleración lineal vs.
-  agilidad/cambio de dirección)
+  agilidad/cambio de dirección), con fuentes verificadas
+- Convertir los hallazgos en una hoja de una página para coaches (perfil de
+  corredor de ejemplo), presentada como demostración
 
 ## Sobre EP
 
