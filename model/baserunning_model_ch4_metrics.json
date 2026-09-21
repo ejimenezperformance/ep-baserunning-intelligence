@@ -1,0 +1,139 @@
+{
+  "block_a_extra_bases": {
+    "filters": {
+      "min_opportunities": 30,
+      "min_attempts_for_success": 10
+    },
+    "n_att_population": 298,
+    "attempt_rate_all": {
+      "cv_r2": 0.2843,
+      "pearson": {
+        "n": 298,
+        "r": 0.5398,
+        "p": 6.17e-24
+      }
+    },
+    "same_sample": {
+      "n": 293,
+      "attempt_rate": {
+        "cv_r2": 0.276,
+        "ci95": [
+          0.192,
+          0.364
+        ],
+        "pearson": {
+          "n": 293,
+          "r": 0.5357,
+          "p": 3.68e-23
+        }
+      },
+      "safe_per_attempt": {
+        "cv_r2": 0.0343,
+        "ci95": [
+          -0.01,
+          0.086
+        ],
+        "pearson": {
+          "n": 293,
+          "r": 0.2119,
+          "p": 0.000259
+        }
+      },
+      "mean_safe_per_attempt": 0.9708,
+      "sd_safe_per_attempt": 0.0371
+    },
+    "sensitivity_min_attempts": {
+      "5": {
+        "n": 298,
+        "r2_attempt": 0.2843,
+        "r2_safe_per_attempt": 0.0204
+      },
+      "10": {
+        "n": 293,
+        "r2_attempt": 0.276,
+        "r2_safe_per_attempt": 0.0343
+      },
+      "15": {
+        "n": 254,
+        "r2_attempt": 0.2247,
+        "r2_safe_per_attempt": 0.0344
+      },
+      "20": {
+        "n": 189,
+        "r2_attempt": 0.2631,
+        "r2_safe_per_attempt": 0.0239
+      }
+    }
+  },
+  "block_b_leads_steals": {
+    "n_population": 420,
+    "speed_vs_primary_lead": {
+      "n": 420,
+      "r": 0.457,
+      "p": 4.56e-23
+    },
+    "speed_vs_secondary_lead": {
+      "n": 420,
+      "r": 0.3856,
+      "p": 2.46e-16
+    },
+    "primary_lead_vs_attempt_rate": {
+      "n": 420,
+      "r": 0.3592,
+      "p": 3.07e-14
+    },
+    "secondary_lead_vs_attempt_rate": {
+      "n": 420,
+      "r": 0.4176,
+      "p": 3.69e-19
+    },
+    "attempt_rate_models": {
+      "speed_only": {
+        "cv_r2": 0.346,
+        "ci95": [
+          0.289,
+          0.418
+        ]
+      },
+      "speed_plus_primary_lead": {
+        "cv_r2": 0.3519,
+        "ci95": [
+          0.296,
+          0.425
+        ]
+      },
+      "speed_plus_both_leads": {
+        "cv_r2": 0.3916,
+        "ci95": [
+          0.333,
+          0.462
+        ]
+      }
+    },
+    "success_sample": {
+      "min_attempts": 8,
+      "n": 99,
+      "mean_success_rate": 0.7993,
+      "primary_lead_vs_success": {
+        "n": 99,
+        "r": 0.0571,
+        "p": 0.575
+      },
+      "secondary_lead_vs_success": {
+        "n": 99,
+        "r": 0.0546,
+        "p": 0.591
+      },
+      "speed_vs_success": {
+        "n": 99,
+        "r": 0.0284,
+        "p": 0.78
+      }
+    },
+    "primary_lead_vs_runs_stolen": {
+      "n": 420,
+      "r": 0.1013,
+      "p": 0.0379
+    }
+  }
+}
