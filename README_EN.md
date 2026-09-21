@@ -42,7 +42,8 @@ with playing time):
 | Extra bases taken (1st→3rd, etc.) | 298 | **0.48** |
 | Successful stolen base | 406 | **0.04** |
 
-![Comparison](report/chart_baserunning_comparativo.png)
+<img width="1580" height="1180" alt="chart_baserunning_comparativo_en" src="https://github.com/user-attachments/assets/986ece3c-df01-4b9e-96fa-eef5e4c10ea1" />
+
 
 ### The honest read
 
@@ -88,7 +89,8 @@ and a minimum of 3 stolen-base attempts):
 | Extra bases (success rate) | 0.01 | 0.10 | **0.11** | 0.10 |
 | Stolen bases (success rate) | 0.01 | 0.01 | 0.00 | -0.01 |
 
-![Phases](report/chart_baserunning_ch2_phases.png)
+<img width="2580" height="1050" alt="chart_baserunning_ch2_phases_en" src="https://github.com/user-attachments/assets/8f0a4516-2ee8-4c02-b62e-d6a983e0724d" />
+
 
 ### The honest read
 
@@ -139,7 +141,8 @@ descriptively only, with no model fit.
 | Infielders | 127 | 0.12 | **0.42** | 0.41 |
 | Outfielders | 94 | 0.04 | 0.24 | 0.17 |
 
-![Position](report/chart_baserunning_ch3_position.png)
+<img width="2179" height="1060" alt="chart_baserunning_ch3_position_en" src="https://github.com/user-attachments/assets/5b1133be-4f94-495c-8d1e-a805e744f357" />
+
 
 ### The honest read
 
