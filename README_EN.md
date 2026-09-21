@@ -197,7 +197,8 @@ Steal attempt-rate model (10-fold CV R², 95% bootstrap CI): speed only
 **0.35** (0.29-0.42); speed + primary lead **0.35** (0.30-0.43); speed +
 both leads **0.39** (0.33-0.46).
 
-![Decision](report/chart_baserunning_ch4_decision.png)
+<img width="2279" height="1112" alt="chart_baserunning_ch4_decision_en" src="https://github.com/user-attachments/assets/ea40c3d4-1cb9-470f-8751-b6a98d11aa2c" />
+
 
 ### The honest read
 
